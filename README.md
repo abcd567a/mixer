@@ -1,0 +1,58 @@
+# mixer
+
+The script below installs a software system which pulls data from various receivers and mixes these to display all aircraft on one Map.</br></br>
+The combined data is also available at mixer's ports 40005 (beast), 40003 (sbs/basestation) and 40002 (raw/avr) and can be pushed to other sites by a suitable system of socat pipes (script to do this will be added later) </br></br>
+This installation requires that dump1090-fa is already installed on the RPi / Computer on which this script is installed. </br></br>
+The installation script given below creates 2nd copy of dump1090-fa as MIXER of beast data from various receivers on Local Network.</br></br>
+The script also creates socat connections between Mixer and various receivers on Local Network. </br></br>
+
+#### To install the mixer, copy-paste following bash script in your RPi PuTTY or Linux Computer's terminal:</br></br>
+```
+sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-mixer.sh)"  
+```
+
+
+</br>
+
+Mixer Map with mixed Data at: </br></br>
+    IP-of-Pi/mixer/ </br>
+    OR </br>
+    IP-of-Pi:8585 </br>
+
+</br>
+
+Commands to restart mixer and socat pull pipes are:</br>
+    sudo systemctl restart mixer  </br>
+    sudo systemctl restart pull   </br>
+
+All files located in folder /usr/share/mixer/.</br>
+
+The config of mixer is in file /etc/default/mixer </br>
+
+##### IP of your Receivers to be entered in file: </br>
+`/usr/share/mixer/receivers.ip`</b>
+one address per line.</br>
+No blank space at top or between lines See example below:</br>
+
+#### EXAMPLE of receiver IP entries user has to do in file receivers.ip: </br>
+
+192.168.2.235 </br>
+192.168.2.237 </br>
+192.168.2.226 </br>
+192.168.2.224 </br>
+192.168.2.228 </br>
+192.168.2.225 </br>
+192.168.2.227 </br>
+192.168.2.223 </br>
+192.168.2.231 </br>
+192.168.2.229 </br>
+192.168.2.222 </br>
+192.168.2.219 </br>
+192.168.2.217 </br>
+192.168.2.242 </br> </br>
+
+</br>
+
+![image](https://github.com/abcd567a/mixer/assets/28452511/b6f92600-0bfb-4fff-84d2-a18a0ecfbec7)
+
+ 
