@@ -5,9 +5,9 @@ trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 
 #####################################################################################
 echo -e "\e[1;35mCREATING THE DATA MIXER AND MAP OF COMBINED DATA \e[39;0m"
-sleep 5
-#####################################################################################
 echo -e "\e[1;32mInstalling 2nd copy of dump1090-fa as mixer in --net-only mode \e[39;0m"
+#####################################################################################
+sleep 5
 echo " Copying dump1090-fa binary as mixer....."
 install -m 755 /usr/bin/dump1090-fa /usr/bin/mixer
 
