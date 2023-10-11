@@ -68,9 +68,11 @@ sleep 5
 ###################################################################################################
 
 echo -e "\e[1;32mInstalling socat Package..... \e[39;0m"
+sleep 2
 apt install -y socat
 
 echo -e "\e[1;32mInstalling Scripts \"receivers.ip\" & \"pull\" to create socat connections..... \e[39;0m"
+sleep 2
 INSTALL_FOLDER=/usr/share/mixer
 if [[ ! -d ${INSTALL_FOLDER} ]];
 then
@@ -159,7 +161,7 @@ echo -e "\e[1;32mINSTALLATION OF MIXER, MAP, & SOCAT PIPES COMPLETED \e[39;0m"
 echo ""
 #######################################################################################################
 echo -e "\e[1;95mIMPORTANT:  \e[39;0m"
-echo -e "\e[1;32mOpen file for editing:\e[39m" "\e[1;39msudo nano /usr/share/mixer/receivers.ip \e[39;0m"
+echo -e "\e[1;39msudo nano /usr/share/mixer/receivers.ip \e[39;0m"
 echo -e "\e[1;32min above file add IP's of your receivers/Pi's \e[39;0m"
 echo -e "\e[1;32mOne IP per line, like EXAMPLE below \e[39;0m"
 echo ""
