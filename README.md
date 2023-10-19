@@ -1,7 +1,7 @@
 # mixer
 
 The script below installs a software system which pulls data from various receivers and mixes these to display all aircraft on one Map.</br></br>
-The combined data is also available at mixer's ports 40005 (beast), 40003 (sbs/basestation) and 40002 (raw/avr) and can be pushed to other sites by a suitable system of socat pipes (script to do this will be added later) </br></br>
+The combined data is also available at mixer's ports 40005 (beast), 40003 (sbs/basestation) and 40002 (raw/avr) and can be pushed to other sites by a suitable system of socat pipes naned here as **"push"** Script to do this is seperately installed (see below) </br></br>
 This installation requires that dump1090-fa is already installed on the RPi / Computer on which this script is installed. </br></br>
 The installation script given below creates 2nd copy of dump1090-fa as MIXER of beast data from various receivers on Local Network.</br></br>
 The script also creates socat connections between Mixer and various receivers on Local Network. </br></br>
@@ -41,17 +41,33 @@ No blank space at top or between lines See example below:</br>
 192.168.2.226 </br>
 192.168.2.224 </br>
 192.168.2.228 </br>
-192.168.2.225 </br>
 192.168.2.227 </br>
-192.168.2.223 </br>
-192.168.2.231 </br>
-192.168.2.229 </br>
-192.168.2.222 </br>
-192.168.2.219 </br>
-192.168.2.217 </br>
-192.168.2.242 </br> </br>
+192.168.2.223 </br></br>
 
 </br>
+
+# push
+The **push** creares a system of socat connections from **mixer**'s output ports 40002 (avr), 40003 (msg), and 40005 (beast) to sites which accept TCP push connections.
+
+#### To install the "push", copy-paste following bash script in your RPi PuTTY or Linux Computer's terminal:</br></br>
+```
+sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-push.sh)"
+
+</br></br>
+
+sudo nano /usr/share/mixer/targets.ip
+in above file add IP's of your target sites in format
+[DATA_TYPE]:[IP_ADDRESS]:[PORT]
+One Site per line, like EXAMPLES below
+
+`msg:data.adsbhub.org:5001`
+`beast:94.130.23.233:5004`
+
+After adding target sites config and saving the file,
+restart socat by following command:
+sudo systemctl restart push
+
+</vr></br>
 
 ![image](https://github.com/abcd567a/mixer/assets/28452511/b6f92600-0bfb-4fff-84d2-a18a0ecfbec7)
 
