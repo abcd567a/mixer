@@ -57,7 +57,7 @@ The **push** creares a system of socat connections from **mixer**'s output ports
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-push.sh)"
 
 ```
-</br></br>
+
 #### Following message is displayed on completion of installation:
 open following file for editing:</br>
 `sudo nano /usr/share/mixer/targets.ip ` </br>
