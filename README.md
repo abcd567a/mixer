@@ -1,4 +1,8 @@
-# mixer
+# mixer & push
+
+## (1) mixer
+![mixer](https://github.com/abcd567a/mixer/assets/28452511/49fc6a84-9362-47dd-b1d2-ceeb73afecee)
+
 
 The script below installs a software system which pulls data from various receivers and mixes these to display all aircraft on one Map.</br></br>
 The combined data is also available at mixer's ports 40005 (beast), 40003 (sbs/basestation) and 40002 (raw/avr) and can be pushed to other sites by a suitable system of socat pipes naned here as **"push"** Script to do this is seperately installed (see below) </br></br>
@@ -6,7 +10,7 @@ This installation requires that dump1090-fa is already installed on the RPi / Co
 The installation script given below creates 2nd copy of dump1090-fa as MIXER of beast data from various receivers on Local Network.</br></br>
 The script also creates socat connections between Mixer and various receivers on Local Network. </br></br>
 
-#### To install the mixer, copy-paste following bash script in your RPi PuTTY or Linux Computer's terminal:</br></br>
+#### To install the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:</br></br>
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-mixer.sh)"  
 ```
@@ -41,15 +45,14 @@ No blank space at top or between lines See example below:</br>
 192.168.2.226 </br>
 192.168.2.224 </br>
 192.168.2.228 </br>
-192.168.2.227 </br>
 192.168.2.223 </br></br>
 
 </br>
 
-# push
+## (2) push
 The **push** creares a system of socat connections from **mixer**'s output ports 40002 (avr), 40003 (msg), and 40005 (beast) to sites which accept TCP push connections.
 
-#### To install the "push", copy-paste following bash script in your RPi PuTTY or Linux Computer's terminal:</br></br>
+#### To install the "push", copy-paste following bash script in PuTTY or terminal of your RPi or Linux Computer:</br></br>
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-push.sh)"
 
@@ -69,6 +72,6 @@ sudo systemctl restart push
 
 </vr></br>
 
-![image](https://github.com/abcd567a/mixer/assets/28452511/b6f92600-0bfb-4fff-84d2-a18a0ecfbec7)
+
 
  
