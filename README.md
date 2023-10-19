@@ -67,6 +67,7 @@ One Site per line, like EXAMPLES below</br>
 
 `msg:data.adsbhub.org:5001` </br>
 `beast:94.130.23.233:5004` </br>
+`avr:94.130.23.233:5003` </br>
 </br>
 After adding target sites config and saving the file, restart socat by following command:</br>
 sudo systemctl restart push </br>
