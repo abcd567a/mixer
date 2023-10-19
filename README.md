@@ -56,21 +56,22 @@ The **push** creares a system of socat connections from **mixer**'s output ports
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-push.sh)"
 
+```
 </br></br>
+#### Following message is displayed on completion of installation:
+open following file for editing:</br>
+`sudo nano /usr/share/mixer/targets.ip ` </br>
+in above file add IP's of your target sites in format</br>
+[DATA_TYPE]:[IP_ADDRESS]:[PORT]</br>
+One Site per line, like EXAMPLES below</br>
 
-sudo nano /usr/share/mixer/targets.ip
-in above file add IP's of your target sites in format
-[DATA_TYPE]:[IP_ADDRESS]:[PORT]
-One Site per line, like EXAMPLES below
+`msg:data.adsbhub.org:5001` </br>
+`beast:94.130.23.233:5004` </br>
+</br>
+After adding target sites config and saving the file, restart socat by following command:</br>
+sudo systemctl restart push </br>
 
-`msg:data.adsbhub.org:5001`
-`beast:94.130.23.233:5004`
-
-After adding target sites config and saving the file,
-restart socat by following command:
-sudo systemctl restart push
-
-</vr></br>
+</br></br>
 
 
 
