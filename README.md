@@ -1,4 +1,4 @@
-# mixer & push
+# Mixer & Pusher
 
 ## (1) mixer
 ![mixer](https://github.com/abcd567a/mixer/assets/28452511/49fc6a84-9362-47dd-b1d2-ceeb73afecee)
