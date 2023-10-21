@@ -86,12 +86,12 @@ echo "Creating Receiver IP addresses file receivers.ip"
 touch ${INSTALL_FOLDER}/receivers.ip
 echo "127.0.0.1" > ${INSTALL_FOLDER}/receivers.ip
 
-echo "Creating script file create-pulls.sh"
-CREATE_PULLS_SCRIPT=${INSTALL_FOLDER}/create-pulls.sh
-touch ${CREATE_PULLS_SCRIPT}
-chmod 777 ${CREATE_PULLS_SCRIPT}
-echo "Writing code to socat script file create-pulls.sh"
-/bin/cat <<EOM >${CREATE_PULLS_SCRIPT}
+echo "Creating script file create-pullers.sh"
+CREATE_PULLERS_SCRIPT=${INSTALL_FOLDER}/create-pullers.sh
+touch ${CREATE_PULLERS_SCRIPT}
+chmod 777 ${CREATE_PULLERS_SCRIPT}
+echo "Writing code to socat script file create-pullers.sh"
+/bin/cat <<EOM >${CREATE_PULLERS_SCRIPT}
 #!/bin/bash
 RECEIVERS=/usr/share/mixer/receivers.ip
 if  ! [[ -f \${RECEIVERS} ]]; then
@@ -126,31 +126,31 @@ OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,int
 while read line;
 do
 [[ -z "\$line" ]] && continue
-systemctl restart pull@\$line
+systemctl restart puller@\$line
 done < \${RECEIVERS}
 EOM
 
-chmod +x ${CREATE_PULLS_SCRIPT}
+chmod +x ${CREATE_PULLERS_SCRIPT}
 
-echo "Creating systemd service file for create-pulls"
-CREATE_PULLS_SERVICE=/lib/systemd/system/create-pulls.service
-touch ${CREATE_PULLS_SERVICE}
-chmod 777 ${CREATE_PULLS_SERVICE}
-echo "Writing code to service file create-pulls.service"
-/bin/cat <<EOM >${CREATE_PULLS_SERVICE}
-# create-pulls service - by abcd567
+echo "Creating systemd service file for create-pullers"
+CREATE_PULLERS_SERVICE=/lib/systemd/system/create-pullers.service
+touch ${CREATE_PULLERS_SERVICE}
+chmod 777 ${CREATE_PULLERS_SERVICE}
+echo "Writing code to service file create-pullers.service"
+/bin/cat <<EOM >${CREATE_PULLERS_SERVICE}
+# create-pullers service - by abcd567
 
 [Unit]
-Description=create-pulls service, by abcd567
+Description=create-pullers service, by abcd567
 Wants=network.target
 After=network.target
 
 [Service]
 #User=pull
-RuntimeDirectory=create-pulls
+RuntimeDirectory=create-pullers
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/create-pulls.sh
-SyslogIdentifier=create-pulls
+ExecStart=/usr/share/mixer/create-pullers.sh
+SyslogIdentifier=create-pullers
 Type=simple
 Restart=on-failure
 RestartSec=30
@@ -160,16 +160,16 @@ RestartPreventExitStatus=64
 [Install]
 WantedBy=default.target
 EOM
-chmod 644 ${CREATE_PULLS_SERVICE}
-systemctl enable create-pulls
-systemctl restart create-pulls
+chmod 644 ${CREATE_PULLERS_SERVICE}
+systemctl enable create-pullers
+systemctl restart create-pullers
 
-echo "Creating script file start-pull-connections.sh"
-START_PULL_CONNECTIONS_SCRIPT=${INSTALL_FOLDER}/start-pull-connections.sh
-touch ${START_PULL_CONNECTIONS_SCRIPT}
-chmod 777 ${START_PULL_CONNECTIONS_SCRIPT}
-echo "Writing code to script file start-pull-connections.sh"
-/bin/cat <<EOM >${START_PULL_CONNECTIONS_SCRIPT}
+echo "Creating script file start-puller-connections.sh"
+START_PULLER_CONNECTIONS_SCRIPT=${INSTALL_FOLDER}/start-pull-connections.sh
+touch ${START_PULLER_CONNECTIONS_SCRIPT}
+chmod 777 ${START_PULLER_CONNECTIONS_SCRIPT}
+echo "Writing code to script file start-puller-connections.sh"
+/bin/cat <<EOM >${START_PULLER_CONNECTIONS_SCRIPT}
 #!/bin/bash
 
 OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,interval=15"
@@ -184,15 +184,15 @@ while true
      sleep 30
    done
 EOM
-chmod +x ${START_PULL_CONNECTIONS_SCRIPT}
+chmod +x ${START_PULLER_CONNECTIONS_SCRIPT}
 
-echo "Creating systemd service file for pull@.service"
-PULL_SERVICE=/lib/systemd/system/pull@.service
-touch ${PULL_SERVICE}
-chmod 777 ${PULL_SERVICE}
-echo "Writing code to service file pull@.service"
-/bin/cat <<EOM >${PULL_SERVICE}
-# socat connection service - by abcd567
+echo "Creating systemd service file for puller@.service"
+PULLER_SERVICE=/lib/systemd/system/puller@.service
+touch ${PULLER_SERVICE}
+chmod 777 ${PULLER_SERVICE}
+echo "Writing code to service file puller@.service"
+/bin/cat <<EOM >${PULLER_SERVICE}
+# socat pull connection service - by abcd567
 
 [Unit]
 Description=socat pull connections service by abcd567
@@ -201,10 +201,10 @@ After=network.target
 
 [Service]
 #User=pull
-RuntimeDirectory=pull-%i
+RuntimeDirectory=puller-%i
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/start-pull-connections.sh %i
-SyslogIdentifier=pull-%i
+ExecStart=/usr/share/mixer/start-puller-connections.sh %i
+SyslogIdentifier=puller-%i
 Type=simple
 Restart=on-failure
 RestartSec=30
@@ -214,7 +214,7 @@ RestartPreventExitStatus=64
 [Install]
 WantedBy=default.target
 EOM
-chmod 644 ${PULL_SERVICE}
+chmod 644 ${PULLER_SERVICE}
 
 
 #######################################################################################################
@@ -232,7 +232,7 @@ echo -e "\e[1;39m192.168.0.23 \e[39;0m"
 echo ""
 echo -e "\e[1;32mAfter adding receiver IPs and saving the file, \e[39m"
 echo -e "\e[1;32mrestart socat by following command: \e[39m"
-echo -e "\e[1;39msudo systemctl restart pull  \e[39;0m"
+echo -e "\e[1;39msudo systemctl restart puller  \e[39;0m"
 echo ""
 echo -e "\e[1;95mPlease see Map of Mixed Data at: \e[39;0m"
 echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*')/mixer/ \e[39;0m"
@@ -240,8 +240,8 @@ echo -e "\e[1;39mOR \e[39;0m"
 echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*'):8585 \e[39;0m"
 echo ""
 echo -e "\e[1;95mTo restart Mixer: \e[39m" "\e[1;39msudo systemctl restart mixer \e[39;0m"
-echo -e "\e[1;95mTo re-create Socat Connections Group: \e[39m" "\e[1;39msudo systemctl restart create-pulls \e[39;0m"
+echo -e "\e[1;95mTo re-create Socat Connections Group: \e[39m" "\e[1;39msudo systemctl restart create-pullers \e[39;0m"
 echo -e "\e[1;95mTo check status of Socat Connection of individual receiver: \e[39m" 
-echo -e "\e[1;39m   sudo systemctl status pull@ip-of-receiver \e[39;0m"
+echo -e "\e[1;39m   sudo systemctl status puller@ip-of-receiver \e[39;0m"
 
 
