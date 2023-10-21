@@ -73,7 +73,7 @@ echo -e "\e[1;32mInstalling socat Package..... \e[39;0m"
 sleep 2
 apt install -y socat
 
-echo -e "\e[1;32mInstalling Scripts \"receivers.ip\" \"start-pull\" and \"start-connections.sh\" to create socat connections..... \e[39;0m"
+echo -e "\e[1;32mInstalling Scripts \"receivers.ip\" \"start-pullers\" and \"start-connections.sh\" to create socat connections..... \e[39;0m"
 sleep 2
 INSTALL_FOLDER=/usr/share/mixer
 if [[ ! -d ${INSTALL_FOLDER} ]];
@@ -165,7 +165,7 @@ systemctl enable create-pullers
 systemctl restart create-pullers
 
 echo "Creating script file start-puller-connections.sh"
-START_PULLER_CONNECTIONS_SCRIPT=${INSTALL_FOLDER}/start-pull-connections.sh
+START_PULLER_CONNECTIONS_SCRIPT=${INSTALL_FOLDER}/start-puller-connections.sh
 touch ${START_PULLER_CONNECTIONS_SCRIPT}
 chmod 777 ${START_PULLER_CONNECTIONS_SCRIPT}
 echo "Writing code to script file start-puller-connections.sh"
