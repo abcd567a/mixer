@@ -11,7 +11,7 @@ echo -e "\e[1;32mInstalling socat Package..... \e[39;0m"
 sleep 2
 apt install -y socat
 
-echo -e "\e[1;32mInstalling Scripts \"receivers.ip\" & \"pull\" to create socat connections..... \e[39;0m"
+echo -e "\e[1;32mInstalling Scripts \"targets.ip\" & \"pusher.sh\" to create socat connections..... \e[39;0m"
 sleep 2
 INSTALL_FOLDER=/usr/share/mixer
 if [[ ! -d ${INSTALL_FOLDER} ]];
@@ -24,12 +24,12 @@ echo "Creating Targets IP addresses file targets.ip"
 touch ${INSTALL_FOLDER}/targets.ip
 echo "msg:data.adsbhub.org:5001" > ${INSTALL_FOLDER}/targets.ip
 
-echo "Creating socat script file push.sh"
-PUSH_SCRIPT=${INSTALL_FOLDER}/push.sh
-touch ${PUSH_SCRIPT}
-chmod 777 ${PUSH_SCRIPT}
-echo "Writing code to socat script file push.sh"
-/bin/cat <<EOM >${PUSH_SCRIPT}
+echo "Creating socat script file pusher.sh"
+PUSHER_SCRIPT=${INSTALL_FOLDER}/pusher.sh
+touch ${PUSHER_SCRIPT}
+chmod 777 ${PUSHER_SCRIPT}
+echo "Writing code to socat script file pusher.sh"
+/bin/cat <<EOM >${PUSHER_SCRIPT}
 #!/bin/bash
 
 TARGETS=/usr/share/mixer/targets.ip
@@ -88,27 +88,27 @@ do
 done
 EOM
 
-chmod +x ${PUSH_SCRIPT}
+chmod +x ${PUSHER_SCRIPT}
 
-echo "Creating systemd service file for push"
-PUSH_SERVICE=/lib/systemd/system/push.service
-touch ${PUSH_SERVICE}
-chmod 777 ${PUSH_SERVICE}
-echo "Writing code to service file push.service"
-/bin/cat <<EOM >${PUSH_SERVICE}
-# socat push service - by abcd567
+echo "Creating systemd service file for pusher"
+PUSHER_SERVICE=/lib/systemd/system/pusher.service
+touch ${PUSHER_SERVICE}
+chmod 777 ${PUSHER_SERVICE}
+echo "Writing code to service file pusher.service"
+/bin/cat <<EOM >${PUSHER_SERVICE}
+# socat pusher service - by abcd567
 
 [Unit]
-Description=socat push service by abcd567
+Description=pusher service by abcd567
 Wants=network.target
 After=network.target
 
 [Service]
 User=push
-RuntimeDirectory=push
+RuntimeDirectory=pusher
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/push.sh
-SyslogIdentifier=push
+ExecStart=/usr/share/mixer/pusher.sh
+SyslogIdentifier=pusher
 Type=simple
 Restart=on-failure
 RestartSec=30
@@ -118,7 +118,7 @@ RestartPreventExitStatus=64
 [Install]
 WantedBy=default.target
 EOM
-chmod 644 ${PUSH_SERVICE}
+chmod 644 ${PUSHER_SERVICE}
 
 if id -u push >/dev/null 2>&1; then
   echo "user push exists"
@@ -127,8 +127,8 @@ else
   adduser --system --no-create-home push
 fi
 
-systemctl enable push
-systemctl restart push
+systemctl enable pusher
+systemctl restart pusher
 
 #######################################################################################################
 echo ""
@@ -146,5 +146,5 @@ echo -e "\e[1;39mbeast:94.130.23.233:5004 \e[39;0m"
 echo ""
 echo -e "\e[1;32mAfter adding target sites config and saving the file, \e[39m"
 echo -e "\e[1;32mrestart socat by following command: \e[39m"
-echo -e "\e[1;39msudo systemctl restart push  \e[39;0m"
+echo -e "\e[1;39msudo systemctl restart pusher  \e[39;0m"
 echo ""
