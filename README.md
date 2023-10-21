@@ -10,7 +10,7 @@ This installation requires that dump1090-fa is already installed on the RPi / Co
 The installation script given below creates 2nd copy of dump1090-fa as MIXER of beast data from various receivers on Local Network.</br></br>
 The script also creates socat connections between Mixer and various receivers on Local Network. </br></br>
 
-#### To install the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:</br></br>
+**To install the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:** </br></br>
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-mixer.sh)"  
 ```
@@ -26,39 +26,43 @@ Mixer Map with mixed Data at: </br></br>
 </br>
 
 Commands to restart mixer and socat pull pipes are:</br>
-    sudo systemctl restart mixer  </br>
-    sudo systemctl restart pull   </br>
+    `sudo systemctl restart mixer `  </br>
+    `sudo systemctl restart create-pulls ` </br>
+    **Status of connection to any receiver:** </br>
+    `sudo systemctl status pull@ip-of-receiver ` </br>
+    **Examples:** </br>
+    `sudo systemctl status pull@192.168.0.123 ` </br>
+    `sudo systemctl status pull@192.168.0.34 ` </br>
+    
+All files located in folder `/usr/share/mixer/` </br>
 
-All files located in folder /usr/share/mixer/.</br>
+The config of mixer is in file `/etc/default/mixer ` </br>
 
-The config of mixer is in file /etc/default/mixer </br>
-
-##### IP of your Receivers to be entered in file: </br>
+**IP of your Receivers to be entered in file:** </br>
 `/usr/share/mixer/receivers.ip`</b>
 one address per line.</br>
-No blank space at top or between lines See example below:</br>
 
-#### EXAMPLE of receiver IP entries user has to do in file receivers.ip: </br>
+**EXAMPLE of receiver IP entries user has to do in file `receivers.ip` :** </br>
 
-192.168.2.235 </br>
-192.168.2.237 </br>
-192.168.2.226 </br>
-192.168.2.224 </br>
-192.168.2.228 </br>
-192.168.2.223 </br></br>
+`192.168.2.235` </br>
+`192.168.2.237` </br>
+`192.168.2.226` </br>
+`192.168.2.224` </br>
+`192.168.2.228` </br>
+`192.168.2.223` </br></br>
 
 </br>
 
 ## (2) push
 The **push** creares a system of socat connections from **mixer**'s output ports 40002 (avr), 40003 (msg), and 40005 (beast) to sites which accept TCP push connections.
 
-#### To install the "push", copy-paste following bash script in PuTTY or terminal of your RPi or Linux Computer:</br></br>
+**To install the "push", copy-paste following bash script in PuTTY or terminal of your RPi or Linux Computer:**</br></br>
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-push.sh)"
 
 ```
 
-#### Following message is displayed on completion of installation:
+**Following message is displayed on completion of installation:**
 open following file for editing:</br>
 `sudo nano /usr/share/mixer/targets.ip ` </br>
 in above file add IP's of your target sites in format</br>
