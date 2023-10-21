@@ -241,6 +241,7 @@ echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*'):8585 \e[39;0m"
 echo ""
 echo -e "\e[1;95mTo restart Mixer: \e[39m" "\e[1;39msudo systemctl restart mixer \e[39;0m"
 echo -e "\e[1;95mTo re-create Socat Connections Group: \e[39m" "\e[1;39msudo systemctl restart create-pulls \e[39;0m"
-echo -e "\e[1;95mTo check status of Socat Connection of individual receiver: \e[39m" "\e[1;39msudo systemctl status pull@ip-of-receiver \e[39;0m"
+echo -e "\e[1;95mTo check status of Socat Connection of individual receiver: \e[39m" 
+echo -e "\e[1;39m   sudo systemctl status pull@ip-of-receiver \e[39;0m"
 
 
