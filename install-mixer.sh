@@ -122,6 +122,7 @@ elif  [[ -f \${RECEIVERS} ]]; then
    fi
 fi
 
+systemctl stop pull@*
 OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,interval=15"
 while read line;
 do
