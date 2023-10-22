@@ -134,7 +134,7 @@ EOM
 chmod +x ${PULLERS_SCRIPT}
 
 echo "Creating systemd service file for pullers"
-CREATE_PULLERS_SERVICE=/lib/systemd/system/pullers.service
+PULLERS_SERVICE=/lib/systemd/system/pullers.service
 touch ${PULLERS_SERVICE}
 chmod 777 ${PULLERS_SERVICE}
 echo "Writing code to service file pullers.service"
