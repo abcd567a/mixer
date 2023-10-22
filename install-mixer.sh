@@ -142,7 +142,7 @@ echo "Writing code to service file pullers.service"
 # pullers service - by abcd567
 
 [Unit]
-Description=pullers service, by abcd567
+Description=pullers by abcd567
 Wants=network.target
 After=network.target
 
@@ -196,7 +196,7 @@ echo "Writing code to service file pull@.service"
 # socat pull connection service - by abcd567
 
 [Unit]
-Description=socat pull connections service by abcd567
+Description=socat connection by abcd567
 Wants=network.target
 After=network.target
 
@@ -226,13 +226,12 @@ echo -e "\e[1;95mIMPORTANT:  \e[39;0m"
 echo -e "\e[1;39msudo nano /usr/share/mixer/receivers.ip \e[39;0m"
 echo -e "\e[1;32min above file add IP's of your receivers/Pi's \e[39;0m"
 echo -e "\e[1;32mOne IP per line, like EXAMPLE below \e[39;0m"
-echo ""
 echo -e "\e[1;39m127.0.0.1 \e[39;0m"
 echo -e "\e[1;39m192.168.0.11 \e[39;0m"
 echo -e "\e[1;39m192.168.0.23 \e[39;0m"
 echo ""
-echo -e "\e[1;32mAfter adding receiver IPs and saving the file, \e[39m"
-echo -e "\e[1;32mupdate & restart socat connections by following command: \e[39m"
+echo -e "\e[1;32mAfter adding or modifying receiver IPs, \e[39m"
+echo -e "\e[1;32mupdate connections by Reboot or by following command: \e[39m"
 echo -e "\e[1;39msudo systemctl restart pullers  \e[39;0m"
 echo ""
 echo -e "\e[1;95mPlease see Map of Mixed Data at: \e[39;0m"
@@ -241,8 +240,9 @@ echo -e "\e[1;39mOR \e[39;0m"
 echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*'):8585 \e[39;0m"
 echo ""
 echo -e "\e[1;95mTo restart Mixer: \e[39m" "\e[1;39msudo systemctl restart mixer \e[39;0m"
-echo -e "\e[1;95mTo re-create Socat Connections Group: \e[39m" "\e[1;39msudo systemctl restart pullers \e[39;0m"
-echo -e "\e[1;95mTo check status of Socat Connection of individual receiver: \e[39m" 
+echo -e "\e[1;95mTo see list of connections created: \e[39m"
+echo -e "\e[1;39msudo systemctl status pullers \e[39;0m"
+echo -e "\e[1;95mTo check status of connection of individual receiver: \e[39m" 
 echo -e "\e[1;39m   sudo systemctl status pull@ip-of-receiver \e[39;0m"
 
 
