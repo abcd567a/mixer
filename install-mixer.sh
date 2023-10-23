@@ -86,12 +86,12 @@ echo "Creating Receiver IP addresses file receivers.ip"
 touch ${INSTALL_FOLDER}/receivers.ip
 echo "127.0.0.1" > ${INSTALL_FOLDER}/receivers.ip
 
-echo "Creating script file pullers.sh"
-PULLERS_SCRIPT=${INSTALL_FOLDER}/pullers.sh
-touch ${PULLERS_SCRIPT}
-chmod 777 ${PULLERS_SCRIPT}
-echo "Writing code to socat script file pullers.sh"
-/bin/cat <<EOM >${PULLERS_SCRIPT}
+echo "Creating script file puller.sh"
+PULLER_SCRIPT=${INSTALL_FOLDER}/puller.sh
+touch ${PULLER_SCRIPT}
+chmod 777 ${PULLER_SCRIPT}
+echo "Writing code to socat script file puller.sh"
+/bin/cat <<EOM >${PULLER_SCRIPT}
 #!/bin/bash
 RECEIVERS=/usr/share/mixer/receivers.ip
 if  ! [[ -f \${RECEIVERS} ]]; then
@@ -132,15 +132,15 @@ echo "Created pull@"\$line;
 done < \${RECEIVERS}
 EOM
 
-chmod +x ${PULLERS_SCRIPT}
+chmod +x ${PULLER_SCRIPT}
 
-echo "Creating systemd service file for pullers"
-PULLERS_SERVICE=/lib/systemd/system/pullers.service
-touch ${PULLERS_SERVICE}
-chmod 777 ${PULLERS_SERVICE}
-echo "Writing code to service file pullers.service"
-/bin/cat <<EOM >${PULLERS_SERVICE}
-# pullers service - by abcd567
+echo "Creating systemd service file for puller"
+PULLER_SERVICE=/lib/systemd/system/puller.service
+touch ${PULLER_SERVICE}
+chmod 777 ${PULLER_SERVICE}
+echo "Writing code to service file puller.service"
+/bin/cat <<EOM >${PULLER_SERVICE}
+# puller service - by abcd567
 
 [Unit]
 Description=pullers by abcd567
@@ -149,10 +149,10 @@ After=network.target
 
 [Service]
 #User=pull
-RuntimeDirectory=pullers
+RuntimeDirectory=puller
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/pullers.sh
-SyslogIdentifier=pullers
+ExecStart=/usr/share/mixer/puller.sh
+SyslogIdentifier=puller
 Type=simple
 Restart=on-failure
 RestartSec=30
@@ -162,9 +162,9 @@ RestartPreventExitStatus=64
 [Install]
 WantedBy=default.target
 EOM
-chmod 644 ${PULLERS_SERVICE}
-systemctl enable pullers
-systemctl restart pullers
+chmod 644 ${PULLER_SERVICE}
+systemctl enable puller
+systemctl restart puller
 
 echo "Creating script file pull-connections.sh"
 PULL_CONNECTIONS_SCRIPT=${INSTALL_FOLDER}/pull-connections.sh
@@ -242,7 +242,7 @@ echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*'):8585 \e[39;0m"
 echo ""
 echo -e "\e[1;95mTo restart Mixer: \e[39m" "\e[1;39msudo systemctl restart mixer \e[39;0m"
 echo -e "\e[1;95mTo see list of connections created: \e[39m"
-echo -e "\e[1;39msudo systemctl status pullers \e[39;0m"
+echo -e "\e[1;39m   sudo systemctl status pullers \e[39;0m"
 echo -e "\e[1;95mTo check status of connection of individual receiver: \e[39m" 
 echo -e "\e[1;39m   sudo systemctl status pull@ip-of-receiver \e[39;0m"
 
