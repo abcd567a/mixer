@@ -49,9 +49,23 @@ one address per line.</br>
 `192.168.2.226` </br>
 `192.168.2.224` </br>
 `192.168.2.228` </br>
-`192.168.2.223` </br></br>
+`192.168.2.223` </br>
 
 </br>
+To list the connections to receivers created, use following command. </br></br>
+
+`sudo systemctl status puller` </br></br>
+Output of above command will list</br></br>
+`Created pull@192.168.2.235` </br>
+`Created pull@192.168.2.237` </br>
+`Created pull@192.168.2.226` </br>
+</br>
+
+ To see status of any connection  use command: </br>
+ `sudo systemctl status pull@ip-of-receiver` </br>
+ For example for receiver at IP `192.168.2.235`, use following command:</br></br>
+`sudo systemctl status pull@192.168.2.235`
+</br></br>
 
 ## (2) Pusher
 The **pusher** creares a system of socat connections from **mixer**'s output ports 40002 (avr), 40003 (msg), and 40005 (beast) to sites which accept TCP push connections.
