@@ -27,7 +27,7 @@ Mixer Map with mixed Data at: </br></br>
 
 Commands to restart mixer and socat pull pipes are:</br>
     `sudo systemctl restart mixer `  </br>
-    `sudo systemctl restart create-pulls ` </br>
+    `sudo systemctl restart puller ` </br>
     **Status of connection to any receiver:** </br>
     `sudo systemctl status pull@ip-of-receiver ` </br>
     **Examples:** </br>
