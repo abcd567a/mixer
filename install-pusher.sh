@@ -23,6 +23,8 @@ fi
 echo "Creating Targets IP addresses file targets.ip"
 touch ${INSTALL_FOLDER}/targets.ip
 echo "msg:data.adsbhub.org:5001" > ${INSTALL_FOLDER}/targets.ip
+echo "beast:feed1.adsbexchange.com:30004" >> ${INSTALL_FOLDER}/targets.ip
+echo "beast:feed.adsb.fi:30004" >> ${INSTALL_FOLDER}/targets.ip
 
 echo "Creating socat script file pusher.sh"
 PUSHER_SCRIPT=${INSTALL_FOLDER}/pusher.sh
