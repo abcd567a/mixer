@@ -25,25 +25,8 @@ Mixer Map with mixed Data at: </br></br>
 
 </br>
 
-Commands to restart mixer and socat pull pipes are:</br>
-    `sudo systemctl restart mixer `  </br>
-    `sudo systemctl restart puller ` </br>
-    **Status of connection to any receiver:** </br>
-    `sudo systemctl status pull@ip-of-receiver ` </br>
-    **Examples:** </br>
-    `sudo systemctl status pull@192.168.0.123 ` </br>
-    `sudo systemctl status pull@192.168.0.34 ` </br>
-    
-All files located in folder `/usr/share/mixer/` </br>
-
-The config of mixer is in file `/etc/default/mixer ` </br>
-
-**IP of your Receivers to be entered in file:** </br>
-`/usr/share/mixer/receivers.ip`</b>
-one address per line.</br>
-
-**EXAMPLE of receiver IP entries user has to do in file `receivers.ip` :** </br>
-
+**EXAMPLE of receiver IP entries you have to do in file `/usr/share/mixer/receivers.ip` :** </br>
+**(one address per line)** </br>
 `192.168.2.235` </br>
 `192.168.2.237` </br>
 `192.168.2.226` </br>
@@ -51,20 +34,29 @@ one address per line.</br>
 `192.168.2.228` </br>
 `192.168.2.223` </br>
 
-</br>
-To list the connections to receivers created, use following command. </br></br>
 
-`sudo systemctl status puller` </br></br>
-Output of above command will list</br></br>
+**Commands to restart mixer and pull connections to receivers:**:</br>
+    `sudo systemctl restart mixer `  </br>
+    `sudo systemctl restart puller ` </br>
+
+**Command to list the connections of mixer to receivers:** </br>
+`sudo systemctl status puller`  </br>
+Output of above command will list as follows: </br>
 `Created pull@192.168.2.235` </br>
 `Created pull@192.168.2.237` </br>
 `Created pull@192.168.2.226` </br>
-</br>
 
- To see status of any connection  use command: </br>
- `sudo systemctl status pull@ip-of-receiver` </br>
- For example for receiver at IP `192.168.2.235`, use following command:</br></br>
-`sudo systemctl status pull@192.168.2.235`
+    
+**Status of connection to any receiver:** </br>
+`sudo systemctl status pull@ip-of-receiver ` </br>
+**Examples:** </br>
+`sudo systemctl status pull@192.168.0.123 ` </br>
+`sudo systemctl status pull@192.168.0.34 ` </br>
+    
+All files located in folder `/usr/share/mixer/` </br>
+
+The config of mixer is in file `/etc/default/mixer ` </br>
+
 </br></br>
 
 ## (2) Pusher
@@ -81,14 +73,35 @@ open following file for editing:</br>
 `sudo nano /usr/share/mixer/targets.ip ` </br>
 in above file add IP's of your target sites in format</br>
 [DATA_TYPE]:[IP_ADDRESS]:[PORT]</br>
-One Site per line, like EXAMPLES below</br>
-
+One Site per line, like EXAMPLE below</br>
+`beast:feed.adsb.fi:30004` </br>
 `msg:data.adsbhub.org:5001` </br>
-`beast:94.130.23.233:5004` </br>
 `avr:94.130.23.233:5003` </br>
 </br>
-After adding target sites config and saving the file, restart socat by following command:</br>
+After adding target sites data type, IP & port, and saving the file, restart pusher by following command:</br>
 `sudo systemctl restart pusher ` </br>
+
+**Commands to restart push connections to targets:**:</br>
+   `sudo systemctl restart pusher ` </br>
+
+**Command to list the connections of mixer to targets:** </br>
+`sudo systemctl status pusher`  </br>
+Output of above command will list as following EXAMPLE: </br>
+`Created push@feed1.adsbexchange.com` </br>
+`Created push@feed.adsb.fi` </br>
+`Created push@data.adsbhub.org` </br>
+
+    
+**Status of connection to any receiver:** </br>
+`sudo systemctl status push@ip-of-target ` </br>
+**Examples:** </br>
+`sudo systemctl status push@feed1.adsbexchange.com ` </br>
+`sudo systemctl status push@feed.adsb.fi ` </br>
+`sudo systemctl status push@data.adsbhub.org` </br>   
+
+**All files located in folder `/usr/share/pusher/`** </br>
+
+</br></br>
 
 </br></br>
 
