@@ -6,8 +6,8 @@
 
 The script below installs a software system which pulls data from various receivers and mixes these to display all aircraft on one Map.</br></br>
 The combined data is also available at mixer's ports 40005 (beast), 40003 (sbs/basestation) and 40002 (raw/avr) and can be pushed to other sites by a suitable system of socat pipes naned here as **"push"** Script to do this is seperately installed (see below) </br></br>
-### This installation requires that dump1090-fa is already installed on the RPi / Computer on which this script is installed. If not, please _FIRST_ install dump1090-fa, then after that run the mixer install script</br></br>
-The installation script given below creates 2nd copy of dump1090-fa as MIXER of beast data from various receivers on Local Network.</br></br>
+**NOTE-1: This installation requires that dump1090-fa is already installed on the RPi / Computer on which this script is installed.** If dump1090-fa is not already installed, please _FIRST_ install dump1090-fa, then after that run the mixer install script</br></br>
+**NOTE-2: The installation script given below will in no way modify or disturb dump1090-fa.** It will creates 2nd copy of dump1090-fa with name **mixer**, and configure this copy (i.e. mixer) with setting `RECEIVER=none` (to run in `--net-only` mode), so that it does _NOT_ grab the dongle. The script also changes port numbers of `mixer` to prevent clash between `mixer` and `dump1090-fa` over use of ports. The `mixer` acts as mixer of beast data from various receivers on Local Network.</br></br>
 The script also creates socat connections between Mixer and various receivers on Local Network. </br></br>
 
 **To install the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:** </br></br>
