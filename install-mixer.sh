@@ -53,7 +53,7 @@ if id -u mixer >/dev/null 2>&1; then
   echo "user mixer exists"
 else
   echo "user mixer does not exist, creating user mixer"
-  adduser --system --no-create-home mixer
+  useradd --system mixer
 fi
 
 systemctl enable mixer
