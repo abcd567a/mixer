@@ -166,12 +166,12 @@ chmod 644 ${PULLER_SERVICE}
 systemctl enable puller
 systemctl restart puller
 
-echo "Creating script file pull-connections.sh"
-PULL_CONNECTIONS_SCRIPT=${INSTALL_FOLDER}/pull-connections.sh
-touch ${PULL_CONNECTIONS_SCRIPT}
-chmod 777 ${PULL_CONNECTIONS_SCRIPT}
-echo "Writing code to script file pull-connections.sh"
-/bin/cat <<EOM >${PULL_CONNECTIONS_SCRIPT}
+echo "Creating script file pull-connector.sh"
+PULL_CONNECTOR_SCRIPT=${INSTALL_FOLDER}/pull-connector.sh
+touch ${PULL_CONNECTOR_SCRIPT}
+chmod 777 ${PULL_CONNECTOR_SCRIPT}
+echo "Writing code to script file pull-connector.sh"
+/bin/cat <<EOM >${PULL_CONNECTOR_SCRIPT}
 #!/bin/bash
 
 OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,interval=15"
@@ -186,7 +186,7 @@ while true
      sleep 30
    done
 EOM
-chmod +x ${PULL_CONNECTIONS_SCRIPT}
+chmod +x ${PULL_CONNECTOR_SCRIPT}
 
 echo "Creating systemd service file for pull@.service"
 PULL_SERVICE=/lib/systemd/system/pull@.service
@@ -205,7 +205,7 @@ After=network.target
 #User=pull
 RuntimeDirectory=pull-%i
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/pull-connections.sh %i
+ExecStart=/usr/share/mixer/pull-connector.sh %i
 SyslogIdentifier=pull-%i
 Type=simple
 Restart=on-failure
