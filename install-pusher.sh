@@ -11,22 +11,31 @@ echo -e "\e[1;32mInstalling socat Package..... \e[39;0m"
 sleep 2
 apt install -y socat
 
-echo -e "\e[1;32mInstalling Scripts \"targets.ip\" & \"pusher.sh\" to create socat connections..... \e[39;0m"
+echo -e "\e[1;32mCreating Scripts and Folders..... \e[39;0m"
 sleep 2
-INSTALL_FOLDER=/usr/share/mixer
+INSTALL_FOLDER=/usr/share/pusher
 if [[ ! -d ${INSTALL_FOLDER} ]];
 then
 echo -e "\e[32mCreating Installation Folder ${INSTALL_FOLDER} \e[39m"
 mkdir ${INSTALL_FOLDER}
 fi
 
-echo "Creating Targets IP addresses file targets.ip"
+echo -e "\e[1;32mCreating sub-folder \"vars\"..... \e[39;0m"
+sleep 2
+VARS_FOLDER=/usr/share/pusher/vars
+if [[ ! -d ${VARS_FOLDER} ]];
+then
+echo -e "\e[32mCreating sub-folder ${VARS_FOLDER} \e[39m"
+mkdir ${VARS_FOLDER}
+fi
+
+echo -e "\e[1;32mCreating Targets IP addresses file targets.ip \e[39;0m"
 touch ${INSTALL_FOLDER}/targets.ip
 echo "beast:feed1.adsbexchange.com:30004" > ${INSTALL_FOLDER}/targets.ip
 echo "beast:feed.adsb.fi:30004" >> ${INSTALL_FOLDER}/targets.ip
 echo "msg:data.adsbhub.org:5001" >> ${INSTALL_FOLDER}/targets.ip
 
-echo "Creating socat script file pusher.sh"
+echo -e "\e[1;32mCreating pusher script file pusher.sh \e[39;0m"
 PUSHER_SCRIPT=${INSTALL_FOLDER}/pusher.sh
 touch ${PUSHER_SCRIPT}
 chmod 777 ${PUSHER_SCRIPT}
@@ -34,7 +43,10 @@ echo "Writing code to socat script file pusher.sh"
 /bin/cat <<EOM >${PUSHER_SCRIPT}
 #!/bin/bash
 
-TARGETS=/usr/share/mixer/targets.ip
+TARGETS=/usr/share/pusher/targets.ip
+VARS_DIR=/usr/share/pusher/vars
+systemctl stop push@*
+rm \${VARS_DIR}/*
 if  ! [[ -f \${TARGETS} ]]; then
    echo "TARGET CONFIG FILE DOES NOT EXIST....";
    echo "Create it by command: sudo nano \${TARGETS}  ";
@@ -61,9 +73,7 @@ elif  [[ -f \${TARGETS} ]]; then
    fi
 fi
 
-OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,interval=15"
 SRC=""
-CMD=""
 while read line;
 do
 [[ -z "\$line" ]] && continue
@@ -77,22 +87,54 @@ elif [[ \$F1 == "avr" ]]; then
 SRC="127.0.0.1:40002";
 fi
 
-CMD+="socat -dd -u TCP:\${SRC},\${OPT} TCP:\${F2}:\${F3},\${OPT} | ";
-done < \${TARGETS}
+echo var1="\${SRC}" > \${VARS_DIR}/\${F2}
+echo var2="\${F2}" >> \${VARS_DIR}/\${F2}
+echo var3="\${F3}" >> \${VARS_DIR}/\${F2}
 
-while true
-do
-      echo "CONNECTING MIXER TO TARGETS:"
-      eval "\${CMD%|*}"
-      echo "LOST CONNECTION OF MIXER AND TARGETS:"
-      echo "RE-CONNECTING MIXER TO TARGETS:"
-      sleep 60
-done
+systemctl restart push@\${F2}
+echo "Created push@"\${F2};
+
+done < \${TARGETS}
 EOM
 
 chmod +x ${PUSHER_SCRIPT}
 
-echo "Creating systemd service file for pusher"
+
+echo -e "\e[1;32mCreating push-connector script file push-connector.sh \e[39;0m"
+PUSH_CONNECTOR_SCRIPT=${INSTALL_FOLDER}/push-connector.sh
+touch ${PUSH_CONNECTOR_SCRIPT}
+chmod 777 ${PUSH_CONNECTOR_SCRIPT}
+echo "Writing code to script file push-connector.sh"
+/bin/cat <<EOM >${PUSH_CONNECTOR_SCRIPT}
+#!/bin/bash
+
+OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,interval=15"
+CMD=""
+CMD="socat -dd -u TCP:\$1,\${OPT} TCP:\$2:\$3,\${OPT} ";
+while true
+    do
+      echo "CONNECTING MIXER TO TARGET"
+      eval "\${CMD}"
+      echo "LOST CONNECTION OF MIXER AND TARGET"
+      echo "RE-CONNECTING MIXER TO TARGET"
+     sleep 30
+   done
+
+EOM
+
+chmod +x ${PUSH_CONNECTOR_SCRIPT}
+
+## echo -e "\e[1;32mCreating user \"push\" to run the push services.... \e[39;0m"
+## if id -u push >/dev/null 2>&1; then
+##  echo "user push exists"
+## else
+##  echo "user push does not exist, creating user push"
+##   useradd --system push
+##  echo "Giving ownership of " ${INSTALL_FOLDER} " and all of it's contents (Recursive) to user \"push\' ...."
+##  chown push:push -R ${INSTALL_FOLDER}
+##fi
+
+echo -e "\e[1;32mCreating systemd service file for pusher \e[39;0m"
 PUSHER_SERVICE=/lib/systemd/system/pusher.service
 touch ${PUSHER_SERVICE}
 chmod 777 ${PUSHER_SERVICE}
@@ -106,10 +148,10 @@ Wants=network.target
 After=network.target
 
 [Service]
-User=push
+## User=push
 RuntimeDirectory=pusher
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/pusher.sh
+ExecStart=/usr/share/pusher/pusher.sh
 SyslogIdentifier=pusher
 Type=simple
 Restart=on-failure
@@ -122,15 +164,40 @@ WantedBy=default.target
 EOM
 chmod 644 ${PUSHER_SERVICE}
 
-if id -u push >/dev/null 2>&1; then
-  echo "user push exists"
-else
-  echo "user push does not exist, creating user push"
-  adduser --system --no-create-home push
-fi
-
 systemctl enable pusher
 systemctl restart pusher
+
+echo -e "\e[1;32mCreating systemd service file for push@.service \e[39;0m"
+PUSH_AT_SERVICE=/lib/systemd/system/push@.service
+touch ${PUSH_AT_SERVICE}
+chmod 777 ${PUSH_AT_SERVICE}
+echo "Writing code to service file push@.service"
+/bin/cat <<EOM >${PUSH_AT_SERVICE}
+# socat push@.service - by abcd567
+
+[Unit]
+Description=push@.service by abcd567
+Wants=network.target
+After=network.target
+
+[Service]
+## User=push
+EnvironmentFile=/usr/share/pusher/vars/%i
+RuntimeDirectory=push-%i
+RuntimeDirectoryMode=0755
+ExecStart=/usr/share/pusher/push-connector.sh \${var1} \${var2} \${var3}
+SyslogIdentifier=push-%i
+Type=simple
+Restart=on-failure
+RestartSec=30
+RestartPreventExitStatus=64
+#Nice=-5
+
+[Install]
+WantedBy=default.target
+EOM
+chmod 644 ${PUSH_AT_SERVICE}
+
 
 #######################################################################################################
 echo ""
@@ -138,7 +205,7 @@ echo -e "\e[1;32mINSTALLATION OF SOCAT PIPES FOR PUSHING DATA FROM MIXER TO SITE
 echo ""
 #######################################################################################################
 echo -e "\e[1;95mIMPORTANT:  \e[39;0m"
-echo -e "\e[1;39m    sudo nano /usr/share/mixer/targets.ip \e[39;0m"
+echo -e "\e[1;39m    sudo nano /usr/share/pusher/targets.ip \e[39;0m"
 echo -e "\e[1;32min above file add IP's of your target sites in format\e[39;0m"
 echo -e "\e[1;39m[DATA_TYPE]:[IP_ADDRESS]:[PORT] \e[39;0m"
 echo -e "\e[1;32mOne Site per line, like EXAMPLES below \e[39;0m"
