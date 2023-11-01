@@ -39,7 +39,7 @@ Mixer Map with mixed Data at: </br></br>
     `sudo systemctl restart mixer `  </br></br>
   
 **Command to list the connections of mixer to receivers:** </br>
-`sudo systemctl status mixer`  </br>
+`sudo systemctl status mixer`  </br></br>
 Output of above command will list as follows: </br>
 `Created pull@192.168.2.235` </br>
 `Created pull@192.168.2.237` </br>
@@ -84,16 +84,16 @@ After adding target sites data type, IP & port, and saving the file, restart pus
    `sudo systemctl restart pusher ` </br>
 
 **Command to list the connections of mixer to targets:** </br>
-`sudo systemctl status pusher`  </br>
+`sudo systemctl status pusher`  </br></br>
 Output of above command will list as following EXAMPLE: </br>
 `Created push@feed1.adsbexchange.com` </br>
 `Created push@feed.adsb.fi` </br>
 `Created push@data.adsbhub.org` </br>
 
     
-**Status of connection to any receiver:** </br>
+**Status of connection to any target:** </br>
 `sudo systemctl status push@ip-of-target ` </br>
-**Examples:** </br>
+**EXAMPLES:** </br>
 `sudo systemctl status push@feed1.adsbexchange.com ` </br>
 `sudo systemctl status push@feed.adsb.fi ` </br>
 `sudo systemctl status push@data.adsbhub.org` </br>   
