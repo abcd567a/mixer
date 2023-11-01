@@ -1,6 +1,6 @@
 # Mixer & Pusher
 
-## (1) Mixer
+# (1) Mixer
 ![mixer](https://github.com/abcd567a/mixer/assets/28452511/49fc6a84-9362-47dd-b1d2-ceeb73afecee)
 
 
@@ -58,7 +58,7 @@ The config of mixer is in file `/etc/default/mixer ` </br>
 
 </br></br>
 
-## (2) Pusher
+# (2) Pusher
 The **pusher** creares a system of socat connections from **mixer**'s output ports 40002 (avr), 40003 (msg), and 40005 (beast) to sites which accept TCP push connections.
 
 **To install the "pusher", copy-paste following bash script in PuTTY or terminal of your RPi or Linux Computer:**</br></br>
