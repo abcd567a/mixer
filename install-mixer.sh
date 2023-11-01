@@ -45,21 +45,13 @@ systemctl restart lighttpd
 cp /lib/systemd/system/dump1090-fa.service /lib/systemd/system/mixer.service
 sed -i 's/dump1090-fa/mixer/g' /lib/systemd/system/mixer.service
 sed -i '/Description=/c\Description=adsb data mixer service' /lib/systemd/system/mixer.service
-sed -i '/User=/c\User=mixer' /lib/systemd/system/mixer.service
+sed -i '/User=/c\##User=mixer' /lib/systemd/system/mixer.service
+sed -i '/^ExecStart=.*/i ExecStartPre='${INSTALL_FOLDER}'/puller.sh' /lib/systemd/system/mixer.service
 
-if id -u mixer >/dev/null 2>&1; then
-  echo "user mixer exists"
-else
-  echo "user mixer does not exist, creating user mixer"
-  useradd --system mixer
-fi
-
-systemctl enable mixer
-systemctl restart mixer
 
 echo "Embeding Title in Mixer Map"
 cp /usr/share/skyaware/html/index.html /usr/share/mixer/html/index.html.orig
-sed -i '/<div class="buttonContainer">/i <div id="Mixer Title" style="text-align:center;width:175px;height:65px;">\n<font color=\#FFFFFF size=6><br>MIXER</font>\n<\/div> <!----- MIXER --->' /usr/share/mixer/html/index.html    
+sed -i '/<div class="buttonContainer">/i <div id="Mixer Title" style="text-align:center;width:175px;height:65px;">\n<font color=\#FFFFFF size=6><br>MIXER</font>\n<\/div> <!----- MIXER --->' /usr/share/mixer/html/index.html  
 sed -i '/PageName = /c\PageName = \"MIXER\"; ' /usr/share/mixer/html/config.js
 
 ###################################################################################################
@@ -73,14 +65,8 @@ echo -e "\e[1;32mInstalling socat Package..... \e[39;0m"
 sleep 2
 apt install -y socat
 
-echo -e "\e[1;32mInstalling Scripts \"receivers.ip\" \"start-pullers\" and \"start-connections.sh\" to create socat connections..... \e[39;0m"
+echo -e "\e[1;32mCreating Scripts \"receivers.ip\" \"puller.sh\" and \"pull-connector.sh\" to create socat connections..... \e[39;0m"
 sleep 2
-INSTALL_FOLDER=/usr/share/mixer
-if [[ ! -d ${INSTALL_FOLDER} ]];
-then
-echo -e "\e[32mCreating Installation Folder ${INSTALL_FOLDER} \e[39m"
-mkdir ${INSTALL_FOLDER}
-fi
 
 echo "Creating Receiver IP addresses file receivers.ip"
 touch ${INSTALL_FOLDER}/receivers.ip
@@ -134,37 +120,6 @@ EOM
 
 chmod +x ${PULLER_SCRIPT}
 
-echo "Creating systemd service file for puller"
-PULLER_SERVICE=/lib/systemd/system/puller.service
-touch ${PULLER_SERVICE}
-chmod 777 ${PULLER_SERVICE}
-echo "Writing code to service file puller.service"
-/bin/cat <<EOM >${PULLER_SERVICE}
-# puller service - by abcd567
-
-[Unit]
-Description=pullers by abcd567
-Wants=network.target
-After=network.target
-
-[Service]
-#User=pull
-RuntimeDirectory=puller
-RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/puller.sh
-SyslogIdentifier=puller
-Type=simple
-Restart=on-failure
-RestartSec=30
-RestartPreventExitStatus=64
-#Nice=-5
-
-[Install]
-WantedBy=default.target
-EOM
-chmod 644 ${PULLER_SERVICE}
-systemctl enable puller
-systemctl restart puller
 
 echo "Creating script file pull-connector.sh"
 PULL_CONNECTOR_SCRIPT=${INSTALL_FOLDER}/pull-connector.sh
@@ -202,10 +157,10 @@ Wants=network.target
 After=network.target
 
 [Service]
-#User=pull
+##User=pull
 RuntimeDirectory=pull-%i
 RuntimeDirectoryMode=0755
-ExecStart=/usr/share/mixer/pull-connector.sh %i
+ExecStart=${INSTALL_FOLDER}/pull-connector.sh %i
 SyslogIdentifier=pull-%i
 Type=simple
 Restart=on-failure
@@ -218,6 +173,8 @@ WantedBy=default.target
 EOM
 chmod 644 ${PULL_SERVICE}
 
+systemctl enable mixer
+systemctl restart mixer
 
 #######################################################################################################
 echo ""
@@ -233,7 +190,7 @@ echo -e "\e[1;39m192.168.0.23 \e[39;0m"
 echo ""
 echo -e "\e[1;32mAfter adding or modifying receiver IPs, \e[39m"
 echo -e "\e[1;32mupdate connections by Reboot or by following command: \e[39m"
-echo -e "\e[1;39m    sudo systemctl restart puller  \e[39;0m"
+echo -e "\e[1;39m    sudo systemctl restart mixer  \e[39;0m"
 echo ""
 echo -e "\e[1;95mPlease see Map of Mixed Data at: \e[39;0m"
 echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*')/mixer/ \e[39;0m"
@@ -242,8 +199,8 @@ echo -e "\e[1;39m$(ip route | grep -m1 -o -P 'src \K[0-9,.]*'):8585 \e[39;0m"
 echo ""
 echo -e "\e[1;95mTo restart Mixer: \e[39m" "\e[1;39msudo systemctl restart mixer \e[39;0m"
 echo -e "\e[1;95mTo see list of connections created: \e[39m"
-echo -e "\e[1;39m    sudo systemctl status puller \e[39;0m"
-echo -e "\e[1;95mTo check status of connection of individual receiver: \e[39m" 
+echo -e "\e[1;39m    sudo systemctl status mixer \e[39;0m"
+echo -e "\e[1;95mTo check status of connection of individual receiver: \e[39m"
 echo -e "\e[1;39m    sudo systemctl status pull@ip-of-receiver \e[39;0m"
 
 
