@@ -36,11 +36,10 @@ Mixer Map with mixed Data at: </br></br>
 
 
 **Commands to restart mixer and pull connections to receivers:**:</br>
-    `sudo systemctl restart mixer `  </br>
-    `sudo systemctl restart puller ` </br>
-
+    `sudo systemctl restart mixer `  </br></br>
+  
 **Command to list the connections of mixer to receivers:** </br>
-`sudo systemctl status puller`  </br>
+`sudo systemctl status mixer`  </br>
 Output of above command will list as follows: </br>
 `Created pull@192.168.2.235` </br>
 `Created pull@192.168.2.237` </br>
