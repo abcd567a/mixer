@@ -61,7 +61,9 @@ The config of mixer is in file `/etc/default/mixer ` </br>
 # (2) Pusher
 The **pusher** creares a system of socat connections from **mixer**'s output ports 40002 (avr), 40003 (msg), and 40005 (beast) to sites which accept TCP push connections.
 
-**To install the "pusher", copy-paste following bash script in PuTTY or terminal of your RPi or Linux Computer:**</br></br>
+**IMPORTANT NOTE: </br>The pusher is intended to feed mixed feed of several receivers to those private sites which are NOT mlat-capable, and also to VRS installed on user's Desktop / Laptop.</br></br> Please do NOT feed the mixed data to MLAT-enabled aggregaror sites, as mixed data results in failure of mlat. For mlat-enabled aggregator sites (such as adsbexchange, adsbfi adsblol etc) install feed-clients provided by these aggregator sites, on each of your receivers.**
+
+**INSTALLATIIN:</br>To install the "pusher", copy-paste following bash script in PuTTY or terminal of your RPi or Linux Computer:** </br></br>
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-pusher.sh)"
 
