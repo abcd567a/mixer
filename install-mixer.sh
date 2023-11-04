@@ -131,7 +131,8 @@ echo "Writing code to script file pull-connector.sh"
 
 OPT="keepalive,keepidle=30,keepintvl=30,keepcnt=2,connect-timeout=30,retry=2,interval=15"
 CMD=""
-CMD="socat -dd -u TCP:\$1:30005,\${OPT} TCP:127.0.0.1:40004,\${OPT} ";
+CMD="socat -dd -u TCP:\$1:30005,\${OPT} TCP:127.0.0.1:40004,\${OPT} | \\
+     socat -dd -u TCP:\$1:30105,\${OPT} TCP:127.0.0.1:40104,\${OPT} ";
 while true
     do
       echo "CONNECTING MIXER TO RECEIVERS:"
