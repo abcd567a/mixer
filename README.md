@@ -10,7 +10,7 @@ The combined data is also available at mixer's ports 40005 (beast), 40003 (sbs/b
 **NOTE-2: The installation script given below will in no way modify or disturb dump1090-fa.** It will creates 2nd copy of dump1090-fa with name **mixer**, and configure this copy (i.e. mixer) with setting `RECEIVER=none` (to run in `--net-only` mode), so that it does _NOT_ grab the dongle. The script also changes port numbers of `mixer` to prevent clash between `mixer` and `dump1090-fa` over use of ports. The `mixer` acts as mixer of beast data from various receivers on Local Network.</br></br>
 The script also creates socat connections between Mixer and various receivers on Local Network. </br></br>
 
-**To install the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:** </br></br>
+### To install the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:
 ```
 sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/install-mixer.sh)"  
 ```
@@ -55,6 +55,11 @@ Output of above command will list as follows: </br>
 All files located in folder `/usr/share/mixer/` </br>
 
 The config of mixer is in file `/etc/default/mixer ` </br>
+
+### To Uninstall the mixer, copy-paste following bash script in PuTTY or terminal of RPi or Linux Computer:
+```
+sudo bash -c "$(wget -O - https://github.com/abcd567a/mixer/raw/master/uninstall-mixer.sh)"  
+```
 
 </br></br>
 
