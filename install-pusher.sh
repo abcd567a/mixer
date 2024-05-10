@@ -113,16 +113,30 @@ CMD=""
 CMD="socat -dd -u TCP:\$1,\${OPT} TCP:\$2:\$3,\${OPT} ";
 while true
     do
-      echo "CONNECTING MIXER TO TARGET"
+      echo "CONNECTING PUSHER TO TARGET"
       eval "\${CMD}"
-      echo "LOST CONNECTION OF MIXER AND TARGET"
-      echo "RE-CONNECTING MIXER TO TARGET"
+      echo "LOST CONNECTION OF PUSHER AND TARGET"
+      echo "RE-CONNECTING PUSHER TO TARGET"
      sleep 30
    done
 
 EOM
 
 chmod +x ${PUSH_CONNECTOR_SCRIPT}
+
+echo -e "\e[1;32mCreating push-stopper script file push-stopper.sh \e[39;0m"
+PUSH_STOPPER_SCRIPT=${INSTALL_FOLDER}/push-stopper.sh
+touch ${PUSH_STOPPER_SCRIPT}
+chmod 777 ${PUSH_STOPPER_SCRIPT}
+echo "Writing code to script file push-stopper.sh"
+/bin/cat <<EOM >${PUSH_STOPPER_SCRIPT}
+#!/bin/bash
+
+systemctl stop push@*
+
+EOM
+
+chmod +x ${PUSH_STOPPER_SCRIPT}
 
 ## echo -e "\e[1;32mCreating user \"push\" to run the push services.... \e[39;0m"
 ## if id -u push >/dev/null 2>&1; then
@@ -152,6 +166,7 @@ After=network.target
 RuntimeDirectory=pusher
 RuntimeDirectoryMode=0755
 ExecStart=/usr/share/pusher/pusher.sh
+ExecStop=/usr/share/pusher/push-stopper.sh
 SyslogIdentifier=pusher
 Type=simple
 Restart=on-failure
