@@ -220,5 +220,8 @@ echo -e "\e[1;95mTo see list of connections created: \e[39m"
 echo -e "\e[1;39m    sudo systemctl status pusher \e[39;0m"
 echo -e "\e[1;95mTo check status of connection of individual target: \e[39m"
 echo -e "\e[1;39m    sudo systemctl status push@ip-of-target \e[39;0m"
+echo ""
+echo -e "\e[1;32mTo \e[1;95mSTOP \e[32mconnections to \e[95mALL \e[32mtarget sites use following command: \e[39m"
+echo -e "\e[1;39m    sudo systemctl stop push@.*  \e[39;0m"
 
 echo ""
